@@ -1,0 +1,24 @@
+{
+  "name": "goodqa",
+  "version": "0.1.2",
+  "description": "GoodQA in Cursor: one MCP connection for every GoodQA organization your personal user token reaches. Tickets, projects, follow-ups, CRM and chat with people, plus a short skill on choosing the right organization and handling refusals.",
+  "author": {
+    "name": "GoodQA"
+  },
+  "homepage": "https://goodqa.app/developers",
+  "repository": "https://github.com/ericmacdougall/goodqa-cursor-plugin",
+  "license": "MIT",
+  "keywords": ["goodqa", "mcp", "issues", "qa", "agents"],
+  "logo": "assets/logo.svg",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "GOODQA_TOKEN": {
+        "type": "string",
+        "title": "GoodQA user token",
+        "description": "A personal user token (gqut_...) made at goodqa.app under Account, User tokens. Sent only as the Authorization header to https://goodqa.app/v1/mcp."
+      }
+    },
+    "required": ["GOODQA_TOKEN"]
+  }
+}

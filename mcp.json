@@ -1,10 +1,7 @@
 {
   "mcpServers": {
     "goodqa": {
-      "url": "https://goodqa.app/v1/mcp",
-      "headers": {
-        "Authorization": "Bearer ${GOODQA_TOKEN}"
-      }
+      "url": "https://goodqa.app/v1/mcp"
     }
   }
 }

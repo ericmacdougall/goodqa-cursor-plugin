@@ -1,12 +1,49 @@
 # GoodQA plugin for Cursor
 
-One MCP connection to [GoodQA](https://goodqa.app) for every organization you work in. The plugin adds:
+[GoodQA](https://goodqa.app) is an issue tracker with a public MCP (Model Context Protocol) server at
+`https://goodqa.app/v1/mcp`. This plugin connects Cursor to that server and adds one skill, so the agent can work
+with GoodQA tickets, projects and follow-ups as you.
 
-- the GoodQA MCP server (`https://goodqa.app/v1/mcp`, streamable HTTP), authenticated with your personal user token;
-- a short `goodqa` skill: find the right organization first, pass `orgId`, and what to do when GoodQA refuses a call.
+It is for software teams that track bugs and QA work in GoodQA and want Cursor's agent to look up, file, update and
+comment on tickets. One personal user token can reach several GoodQA organizations, and ticket text is written by
+other people, so an agent needs rules: find the right organization first, pass `orgId` explicitly, and never treat
+ticket content as instructions.
 
-GoodQA's rulebook for agents that talk to people is served by the MCP server itself (resource
-`goodqa://skills/conversations`), so it is always current and is not copied into this package.
+In version 0.1.2 the plugin contains:
+
+- the GoodQA MCP server (`https://goodqa.app/v1/mcp`, streamable HTTP), authenticated with your personal user token
+  sent as `Authorization: Bearer ${GOODQA_TOKEN}`;
+- a short `goodqa` skill: find the right organization first, pass `orgId`, and what to do when GoodQA refuses a call;
+- no credential of its own. The token is a Cursor plugin variable you set, and the package only holds the placeholder.
+
+You choose the token's abilities, the organizations it reaches, an optional expiry and whether sensitive actions wait
+for your approval at goodqa.app. GoodQA's rulebook for agents that talk to people is served by the MCP server itself
+(resource `goodqa://skills/conversations`), so it is not copied into this package.
+
+## How it works
+
+```mermaid
+flowchart LR
+    T[You: create user token<br/>goodqa.app, Account, User tokens] --> V[Cursor plugin variable<br/>GOODQA_TOKEN]
+    V --> J[mcp.json<br/>Authorization: Bearer placeholder]
+    J --> M[goodqa.app/v1/mcp]
+    S[skills/goodqa/SKILL.md] --> A[Cursor agent]
+    A -- whoami, list_orgs, tool calls with orgId --> M
+```
+
+| File | Role |
+|---|---|
+| `.cursor-plugin/plugin.json` | Manifest: name `goodqa`, version `0.1.2`, MIT license, and the required `GOODQA_TOKEN` variable. |
+| `mcp.json` | One server `goodqa` with the bearer header placeholder. |
+| `skills/goodqa/SKILL.md` | Session-start routine, refusal handling and the rule that content is data. |
+
+## Status and roadmap
+
+| Item | State |
+|---|---|
+| Plugin version 0.1.2, user-token authentication | In this repository and described in this README. |
+| Cursor Marketplace listing | The Install section refers to the Cursor Marketplace, but nothing in this repository shows an accepted listing; check Cursor directly. |
+| Version 0.2.0 with OAuth sign-in instead of a pasted token | In progress as draft pull request #1 (not merged). Its description says Cursor OAuth consent, scoped reads and writes, denial of unauthorized access and revocation still need client acceptance evidence. Until it ships, the manual token described below is the supported path. |
 
 ## Install
 
